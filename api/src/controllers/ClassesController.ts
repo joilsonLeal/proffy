@@ -1,28 +1,25 @@
 import { Request, Response } from 'express';
 
 import db from '../database/connection';
+import { ClassesFilterInterface } from '../interfaces/ClassesFilterInterface';
+import { ClassesRequestInterface, ClassesResponseInterface } from '../interfaces/ClassesInterface';
+import { ScheduleItem } from '../interfaces/ScheduleItemsInterface';
 import convertHourToMinutes from '../utils/convertHourToMinutes';
 
-interface ScheduleItem {
-    week_day: number;
-    from: string;
-    to: string;
-}
 
 export default class ClassesController {
-    async index(request: Request, response: Response) {
-        const filters = request.query;
-
-        const week_day = filters.week_day as string;
-        const subject = filters.subject as string;
-        const time = filters.time as string;
-
+    async index(request: ClassesRequestInterface, response: Response) {
+        const {
+            week_day, 
+            subject, 
+            time
+        } = request.query;
         if(!week_day || !subject || !time) {
-            return response.status(400).json({
+            response.status(400).json({
                 error: 'Missing filters to search classes'
             });
         }
-
+        
         const timeInMinutes = convertHourToMinutes(time); 
         
         const classes = await db('classes')
@@ -37,7 +34,7 @@ export default class ClassesController {
             .where('classes.subject', '=', subject)
             .join('users', 'classes.user_id', '=', 'users.id')
             .select(['classes.*', 'users.*']);
-            
+
         response.json(classes);
     }
 
