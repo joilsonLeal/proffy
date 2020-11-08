@@ -1,8 +1,7 @@
 import { Request, Response } from 'express';
 
 import db from '../database/connection';
-import { ClassesFilterInterface } from '../interfaces/ClassesFilterInterface';
-import { ClassesRequestInterface, ClassesResponseInterface } from '../interfaces/ClassesInterface';
+import { ClassesRequestInterface } from '../interfaces/ClassesInterface';
 import { ScheduleItem } from '../interfaces/ScheduleItemsInterface';
 import convertHourToMinutes from '../utils/convertHourToMinutes';
 
